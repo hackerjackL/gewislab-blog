@@ -16,23 +16,14 @@ if not exist %OBSUTIL% (
     echo.
 )
 
-echo [1/3] 上传 HTML 文件...
-%OBSUTIL% cp index.html obs://gewislab-blog/index.html -meta=content-type:text/html -f -u
+echo [1/2] 上传 HTML 文件...
+%OBSUTIL% cp index.html obs://gewislab-blog/index.html -f
 
 echo.
-echo [2/3] 上传 CSS 文件...
-%OBSUTIL% cp css/style.css obs://gewislab-blog/css/style.css -meta=content-type:text/css -f -u
-
-echo.
-echo [3/3] 清理多余文件...
-%OBSUTIL% rm obs://gewislab-blog/.git/ -r -f >nul 2>&1
-%OBSUTIL% rm obs://gewislab-blog/.atomcode/ -r -f >nul 2>&1
-%OBSUTIL% rm obs://gewislab-blog/.obsutil/ -r -f >nul 2>&1
-
+echo  ⚠️ 华为云 OBS 默认域名强制下载，无法在线预览
+echo  建议用 GitHub Pages: https://hackerjackL.github.io/gewislab-blog/
 echo.
 echo ═══════════════════════════
 echo  ✓ 部署完成！
-echo  访问地址：
-echo  https://gewislab-blog.obs-website.cn-north-4.myhuaweicloud.com/
 echo ═══════════════════════════
 pause

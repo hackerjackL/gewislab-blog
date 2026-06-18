@@ -3,44 +3,894 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GewisLab Blog</title>
-    <link rel="stylesheet" href="css/style.css">
-    <!-- AtomGit Pages / GitCode Pages 静态站点 -->
+    <title>Gewis Lab · AI Research Team</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════
+           RESET & BASE
+           ═══════════════════════════════════════ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-card: rgba(20, 20, 30, 0.6);
+            --text-primary: #f0f0f5;
+            --text-secondary: #8888a0;
+            --accent-1: #6366f1;
+            --accent-2: #8b5cf6;
+            --accent-3: #06b6d4;
+            --accent-glow: rgba(99, 102, 241, 0.15);
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { color: inherit; text-decoration: none; }
+        img { max-width: 100%; display: block; }
+
+        /* ═══════════════════════════════════════
+           ANIMATED BACKGROUND (particle grid)
+           ═══════════════════════════════════════ */
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ═══════════════════════════════════════
+           CURSOR GLOW
+           ═══════════════════════════════════════ */
+        .cursor-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: left 0.3s ease, top 0.3s ease;
+        }
+
+        /* ═══════════════════════════════════════
+           NAV
+           ═══════════════════════════════════════ */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px) saturate(1.4);
+            -webkit-backdrop-filter: blur(20px) saturate(1.4);
+            background: rgba(10,10,15,0.6);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        .nav-gh-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 1rem;
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.03);
+        }
+        .nav-gh-btn:hover {
+            border-color: var(--accent-1);
+            color: var(--text-primary);
+            background: rgba(99,102,241,0.08);
+        }
+
+        /* ═══════════════════════════════════════
+           HERO
+           ═══════════════════════════════════════ */
+        .hero {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            background: rgba(6, 182, 212, 0.06);
+            color: var(--accent-3);
+            margin-bottom: 2rem;
+            animation: fadeSlideUp 0.8s ease backwards;
+        }
+
+        .hero-badge .dot {
+            display: inline-block;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent-3);
+            animation: pulse-dot 2s ease infinite;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.8rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            animation: fadeSlideUp 0.8s 0.15s ease backwards;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            max-width: 640px;
+            margin-top: 1.5rem;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--text-secondary);
+            line-height: 1.7;
+            animation: fadeSlideUp 0.8s 0.3s ease backwards;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeSlideUp 0.8s 0.45s ease backwards;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: #fff;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(99,102,241,0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99,102,241,0.4);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.03);
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent-1);
+            color: var(--text-primary);
+            background: rgba(99,102,241,0.06);
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            opacity: 0.4;
+            animation: fadeSlideUp 0.8s 0.7s ease backwards;
+        }
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--text-secondary), transparent);
+            animation: scrollPulse 2s ease infinite;
+        }
+
+        /* ═══════════════════════════════════════
+           SECTION COMMON
+           ═══════════════════════════════════════ */
+        .section {
+            position: relative;
+            z-index: 1;
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent-1);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            max-width: 600px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        /* ═══════════════════════════════════════
+           RESEARCH AREAS
+           ═══════════════════════════════════════ */
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-top: 3rem;
+        }
+
+        .research-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+        }
+
+        .research-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            right: 0; bottom: 0;
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.4s;
+            background: linear-gradient(135deg, rgba(99,102,241,0.04), rgba(6,182,212,0.04));
+        }
+
+        .research-card:hover {
+            border-color: rgba(99,102,241,0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+        .research-card:hover::before { opacity: 1; }
+
+        .research-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+            background: rgba(99,102,241,0.08);
+            border: 1px solid rgba(99,102,241,0.1);
+        }
+
+        .research-card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .research-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ═══════════════════════════════════════
+           TECH STACK / MARQUEE
+           ═══════════════════════════════════════ */
+        .tech-section {
+            position: relative;
+            z-index: 1;
+            padding: 4rem 2rem;
+            overflow: hidden;
+        }
+
+        .tech-marquee {
+            display: flex;
+            gap: 2rem;
+            animation: marquee 30s linear infinite;
+            width: max-content;
+        }
+
+        .tech-item {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            background: var(--bg-card);
+            font-size: 0.875rem;
+            font-weight: 500;
+            white-space: nowrap;
+            color: var(--text-secondary);
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .tech-item:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-1);
+        }
+
+        /* ═══════════════════════════════════════
+           STATS
+           ═══════════════════════════════════════ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ═══════════════════════════════════════
+           ABOUT / MISSION
+           ═══════════════════════════════════════ */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .about-text .highlight {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .about-image {
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-card);
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            backdrop-filter: blur(12px);
+        }
+
+        /* ═══════════════════════════════════════
+           UPDATES / LATEST
+           ═══════════════════════════════════════ */
+        .update-list {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .update-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .update-item:hover { border-color: rgba(99,102,241,0.15); }
+
+        .update-date {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            min-width: 70px;
+        }
+        .update-tag {
+            padding: 0.15rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(99,102,241,0.1);
+            color: var(--accent-1);
+        }
+
+        /* ═══════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════ */
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 4rem 2rem;
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        footer .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            transition: color 0.2s;
+        }
+        footer .footer-links a:hover { color: var(--text-primary); }
+
+        /* ═══════════════════════════════════════
+           ANIMATIONS
+           ═══════════════════════════════════════ */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50%      { opacity: 0.3; }
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 1; }
+            50%      { opacity: 0.2; }
+        }
+
+        @keyframes marquee {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ═══════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════ */
+        @media (max-width: 768px) {
+            nav { padding: 1rem 1.25rem; }
+            .nav-links { display: none; }
+            .hero h1 { font-size: clamp(2rem, 12vw, 3rem); }
+            .section { padding: 4rem 1.25rem; }
+            .research-grid { grid-template-columns: 1fr; }
+            .about-content { grid-template-columns: 1fr; gap: 2rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header class="hero">
-            <h1>GewisLab</h1>
-            <p class="subtitle">探索 · 记录 · 分享</p>
-        </header>
 
-        <main>
-            <section class="about">
-                <h2>关于本站</h2>
-                <p>这里是 GewisLab 的技术博客，记录我们在软件开发、系统架构和开源探索中的思考与实践。</p>
-                <p>更多内容正在路上，敬请期待……</p>
-            </section>
+    <!-- ═══ ANIMATED BG ═══ -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="cursor-glow" id="cursorGlow"></div>
 
-            <section class="links">
-                <h2>快速链接</h2>
-                <div class="card-grid">
-                    <a href="https://gitcode.com/GewisLab" class="card" target="_blank" rel="noopener">
-                        <span class="card-icon">📦</span>
-                        <span class="card-title">GitCode 组织</span>
-                        <span class="card-desc">查看我们的开源项目</span>
+    <!-- ═══ NAV ═══ -->
+    <nav>
+        <span class="nav-logo">Gewis Lab</span>
+        <div class="nav-links">
+            <a href="#research">研究领域</a>
+            <a href="#about">关于</a>
+            <a href="#updates">动态</a>
+            <a href="https://gitcode.com/GewisLab" target="_blank" rel="noopener" class="nav-gh-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.84 9.49.5.09.68-.22.68-.48 0-.24-.01-1.04-.01-1.89-2.78.6-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.86 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48C19.14 20.17 22 16.42 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                GitCode
+            </a>
+        </div>
+    </nav>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span class="dot"></span>
+            AI Research Team · TJCU
+        </div>
+
+        <h1>
+            <span class="gradient">Gewis Lab</span>
+        </h1>
+
+        <p class="hero-sub">
+            聚焦深度学习 · 具身智能 · 多模态技术<br>
+            致力于推动人工智能基础研究与应用落地
+        </p>
+
+        <div class="hero-actions">
+            <a href="#research" class="btn-primary">
+                探索研究方向
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="https://gitcode.com/GewisLab" target="_blank" rel="noopener" class="btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.84 9.49.5.09.68-.22.68-.48 0-.24-.01-1.04-.01-1.89-2.78.6-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.86 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48C19.14 20.17 22 16.42 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                关注我们
+            </a>
+        </div>
+
+        <div class="hero-scroll">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ═══ RESEARCH AREAS ═══ -->
+    <section class="section" id="research">
+        <div class="reveal">
+            <p class="section-label">/ 研究方向</p>
+            <h2 class="section-title">Research Areas</h2>
+            <p class="section-desc">团队长期深耕人工智能核心领域，从底层感知到高层决策，构建完整的技术栈。</p>
+        </div>
+
+        <div class="research-grid">
+            <div class="research-card reveal">
+                <div class="research-icon">🤖</div>
+                <h3>机器人感知与控制</h3>
+                <p>融合多传感器信息，构建鲁棒的机器人感知系统，实现复杂环境下的自主导航与精准操控。</p>
+            </div>
+
+            <div class="research-card reveal">
+                <div class="research-icon">👁️</div>
+                <h3>目标检测与图像分割</h3>
+                <p>基于 YOLO 系列等前沿架构，持续优化视觉检测与分割算法，在效率与精度之间寻求最优平衡。</p>
+            </div>
+
+            <div class="research-card reveal">
+                <div class="research-icon">🧠</div>
+                <h3>具身智能 · VLA 模型</h3>
+                <p>探索视觉-语言-动作（VLA）统一架构，将感知、推理与决策端到端融合，推动具身智能落地。</p>
+            </div>
+
+            <div class="research-card reveal">
+                <div class="research-icon">📈</div>
+                <h3>时序建模与分析</h3>
+                <p>针对时间序列数据的建模、预测与异常检测，应用于科学实验、工业监控等真实场景。</p>
+            </div>
+
+            <div class="research-card reveal">
+                <div class="research-icon">🔬</div>
+                <h3>AI for Science</h3>
+                <p>将物理机理与数据驱动方法深度融合，用人工智能加速科学发现与工程仿真。</p>
+            </div>
+
+            <div class="research-card reveal">
+                <div class="research-icon">⚡</div>
+                <h3>模型高效微调</h3>
+                <p>应用 LoRA、Adapter 等参数高效微调技术，大幅降低大模型训练成本，提升跨任务泛化能力。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ STATS ═══ -->
+    <section class="section">
+        <div class="stats-grid">
+            <div class="stat-card reveal">
+                <div class="stat-number" data-count="15">0</div>
+                <div class="stat-label">GitHub 关注者</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-number" data-count="6">0</div>
+                <div class="stat-label">研究方向</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-number" data-count="3">0</div>
+                <div class="stat-label">省部级奖项</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-number" data-count="5">0</div>
+                <div class="stat-label">核心算法框架</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ ABOUT ═══ -->
+    <section class="section" id="about">
+        <div class="reveal">
+            <p class="section-label">/ 关于我们</p>
+            <h2 class="section-title">About Gewis Lab</h2>
+        </div>
+        <div class="about-content">
+            <div class="about-text reveal">
+                <p>
+                    <span class="highlight">Gewis Lab</span> 是一支专注于人工智能基础研究与智能系统应用的学术团队，隶属于 <span class="highlight">TJCU</span>（天津商业大学）。
+                </p>
+                <p>
+                    团队坚持 <span class="highlight">"以研促教、以用促学"</span> 的理念，在深度学习、机器视觉、具身智能等前沿领域积累了丰富的科研与工程实践经验。
+                </p>
+                <p>
+                    我们曾多次获得省部级及以上科研奖励，致力于开放协作与技术创新，诚邀全球研究者关注与参与我们的开源项目！
+                </p>
+                <p style="margin-top:1.5rem;">
+                    <a href="https://gitcode.com/GewisLab" target="_blank" rel="noopener" class="btn-primary" style="font-size:0.85rem; padding: 0.6rem 1.5rem;">
+                        查看开源项目 →
                     </a>
-                    <a href="https://atomgit.com/GewisLab" class="card" target="_blank" rel="noopener">
-                        <span class="card-icon">⚛</span>
-                        <span class="card-title">AtomGit 组织</span>
-                        <span class="card-desc">跨平台代码托管</span>
-                    </a>
-                </div>
-            </section>
-        </main>
+                </p>
+            </div>
+            <div class="about-image reveal">
+                <span>🧪</span>
+            </div>
+        </div>
+    </section>
 
-        <footer>
-            <p>&copy; 2026 GewisLab. Powered by AtomGit Pages.</p>
-        </footer>
-    </div>
+    <!-- ═══ UPDATES ═══ -->
+    <section class="section" id="updates">
+        <div class="reveal">
+            <p class="section-label">/ 最新动态</p>
+            <h2 class="section-title">Latest Updates</h2>
+        </div>
+
+        <div class="update-list">
+            <div class="update-item reveal">
+                <span class="update-date">2026.06</span>
+                <span class="update-tag">New</span>
+                <span>Gewis Lab 开源组织正式上线，欢迎关注！</span>
+            </div>
+            <div class="update-item reveal">
+                <span class="update-date">2026.06</span>
+                <span class="update-tag" style="background:rgba(6,182,212,0.1);color:var(--accent-3);">Research</span>
+                <span>VLA 统一架构项目启动，推进具身智能应用落地</span>
+            </div>
+            <div class="update-item reveal">
+                <span class="update-date">2025.12</span>
+                <span class="update-tag" style="background:rgba(139,92,246,0.1);color:var(--accent-2);">Award</span>
+                <span>团队获得省部级科研奖励表彰</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ TECH MARQUEE ═══ -->
+    <section class="tech-section">
+        <div class="tech-marquee" id="techMarquee">
+            <span class="tech-item">Python</span>
+            <span class="tech-item">PyTorch</span>
+            <span class="tech-item">YOLO</span>
+            <span class="tech-item">LoRA</span>
+            <span class="tech-item">Transformer</span>
+            <span class="tech-item">VLA</span>
+            <span class="tech-item">ROS</span>
+            <span class="tech-item">OpenCV</span>
+            <span class="tech-item">CUDA</span>
+            <span class="tech-item">Docker</span>
+            <!-- duplicate for seamless loop -->
+            <span class="tech-item">Python</span>
+            <span class="tech-item">PyTorch</span>
+            <span class="tech-item">YOLO</span>
+            <span class="tech-item">LoRA</span>
+            <span class="tech-item">Transformer</span>
+            <span class="tech-item">VLA</span>
+            <span class="tech-item">ROS</span>
+            <span class="tech-item">OpenCV</span>
+            <span class="tech-item">CUDA</span>
+            <span class="tech-item">Docker</span>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer>
+        <p>© 2026 Gewis Lab · AI Research Team @ TJCU</p>
+        <div class="footer-links">
+            <a href="https://gitcode.com/GewisLab" target="_blank" rel="noopener">GitCode</a>
+            <a href="https://atomgit.com/GewisLab" target="_blank" rel="noopener">AtomGit</a>
+            <a href="mailto:1832259@aliyun.com">Contact</a>
+        </div>
+    </footer>
+
+    <!-- ═══ JS ═══ -->
+    <script>
+        // ─── Particle Canvas ───
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let W, H, particles = [];
+
+        function resize() {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const COUNT = 60;
+        for (let i = 0; i < COUNT; i++) {
+            particles.push({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                r: Math.random() * 1.2 + 0.3,
+            });
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, W, H);
+            for (let p of particles) {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0) p.x = W;
+                if (p.x > W) p.x = 0;
+                if (p.y < 0) p.y = H;
+                if (p.y > H) p.y = 0;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(99,102,241,0.25)';
+                ctx.fill();
+            }
+
+            // draw connections
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 160) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(99,102,241,${0.06 * (1 - dist / 160)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(drawParticles);
+        }
+        drawParticles();
+
+        // ─── Cursor Glow ───
+        const glow = document.getElementById('cursorGlow');
+        document.addEventListener('mousemove', e => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        // ─── Scroll Reveal ───
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver(entries => {
+            for (const entry of entries) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            }
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => observer.observe(el));
+
+        // ─── Counter Animation ───
+        const counters = document.querySelectorAll('.stat-number');
+        const counterObserver = new IntersectionObserver(entries => {
+            for (const entry of entries) {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseInt(el.dataset.count);
+                    let current = 0;
+                    const step = Math.max(1, Math.floor(target / 40));
+                    const timer = setInterval(() => {
+                        current += step;
+                        if (current >= target) {
+                            el.textContent = target;
+                            clearInterval(timer);
+                        } else {
+                            el.textContent = current;
+                        }
+                    }, 30);
+                    counterObserver.unobserve(el);
+                }
+            }
+        }, { threshold: 0.5 });
+        counters.forEach(el => counterObserver.observe(el));
+    </script>
+
 </body>
 </html>
