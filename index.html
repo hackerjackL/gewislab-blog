@@ -1,896 +1,647 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gewis Lab · AI Research Team</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        /* ═══════════════════════════════════════
-           RESET & BASE
-           ═══════════════════════════════════════ */
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gewis Lab · 让智能触手可及 | TJCU AI Research</title>
+<meta name="description" content="Gewis Lab × 天津商业大学 — 聚焦具身智能、多模态大模型、深度学习与数理统计，推动人工智能基础研究与应用落地。">
+<style>
+/* ═══════════════════════════════════════════════
+   RESET & TOKENS
+   ═══════════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#F5F0E8;
+  --bg-2:#FFFFFF;
+  --ink:#0D0D14;
+  --ink-2:#2E2E3C;
+  --soft:#6B6B7B;
+  --line:rgba(13,13,20,.07);
+  --line-2:rgba(13,13,20,.04);
+  --coral:#FF5A5A;
+  --violet:#6B4EE6;
+  --mint:#0FAF9A;
+  --amber:#FF9F1C;
+  --sky:#1BA3D6;
+  --pink:#F06292;
+  --radius:28px;
+  --shadow:0 20px 60px -20px rgba(13,13,20,.15);
+  --shadow-lg:0 50px 100px -30px rgba(13,13,20,.22);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  --mono:"SF Mono","JetBrains Mono","Fira Code",ui-monospace,monospace;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+::selection{background:var(--violet);color:#fff}
 
-        :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #111118;
-            --bg-card: rgba(20, 20, 30, 0.6);
-            --text-primary: #f0f0f5;
-            --text-secondary: #8888a0;
-            --accent-1: #6366f1;
-            --accent-2: #8b5cf6;
-            --accent-3: #06b6d4;
-            --accent-glow: rgba(99, 102, 241, 0.15);
-            --border-subtle: rgba(255, 255, 255, 0.06);
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
+/* ═══════════════════════════════════════════════
+   CURSOR BLOB
+   ═══════════════════════════════════════════════ */
+.cursor-blob{
+  position:fixed;top:0;left:0;width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(107,78,230,.13),rgba(255,90,90,.05) 45%,transparent 70%);
+  pointer-events:none;z-index:0;transform:translate(-50%,-50%);
+  transition:transform .16s ease-out;mix-blend-mode:multiply;filter:blur(10px);
+}
 
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: var(--font-sans);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+/* ═══════════════════════════════════════════════
+   NAV
+   ═══════════════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem clamp(1.2rem,4vw,2.6rem);
+  transition:all .4s cubic-bezier(.2,.8,.2,1);
+}
+nav.scrolled{
+  backdrop-filter:blur(24px) saturate(1.7);
+  -webkit-backdrop-filter:blur(24px) saturate(1.7);
+  background:rgba(245,240,232,.78);
+  border-bottom:1px solid var(--line-2);
+  padding:.75rem clamp(1.2rem,4vw,2.6rem);
+}
+.nav-logo{display:flex;align-items:center;gap:.55rem;font-weight:800;font-size:1.15rem;letter-spacing:-.02em}
+.logo-mark{
+  width:36px;height:36px;border-radius:12px;display:grid;place-items:center;color:#fff;font-size:1rem;font-weight:800;
+  background:linear-gradient(135deg,var(--violet),var(--coral) 55%,var(--amber));
+  box-shadow:0 8px 22px -8px rgba(107,78,230,.55);
+}
+.nav-links{display:flex;align-items:center;gap:2.2rem}
+.nav-links a{font-size:.9rem;font-weight:500;color:var(--ink-2);transition:color .2s;position:relative}
+.nav-links a:not(.nav-cta)::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--violet),var(--coral));transition:width .3s}
+.nav-links a:not(.nav-cta):hover{color:var(--ink)}
+.nav-links a:not(.nav-cta):hover::after{width:100%}
+.nav-cta{
+  display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.15rem;border-radius:100px;
+  font-size:.85rem;font-weight:600;color:#fff;
+  background:linear-gradient(135deg,var(--ink),#1f1f2e);
+  transition:transform .25s,box-shadow .25s;
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 28px -10px rgba(13,13,20,.5)}
+.nav-cta .spark{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 12px var(--amber);animation:pulse-dot 2s ease infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+.nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px}
+.nav-burger span{width:22px;height:2px;background:var(--ink);border-radius:2px;transition:.3s}
 
-        a { color: inherit; text-decoration: none; }
-        img { max-width: 100%; display: block; }
+/* ═══════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════ */
+.hero{
+  position:relative;min-height:100svh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  padding:7.5rem clamp(1.2rem,5vw,2rem) 4rem;overflow:hidden;
+}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.55;z-index:0;pointer-events:none;will-change:transform}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,var(--violet),transparent 65%);top:-12%;left:-8%;animation:float1 20s ease-in-out infinite}
+.orb-2{width:520px;height:520px;background:radial-gradient(circle,var(--coral),transparent 65%);bottom:-12%;right:-6%;animation:float2 24s ease-in-out infinite}
+.orb-3{width:420px;height:420px;background:radial-gradient(circle,var(--mint),transparent 65%);top:35%;right:15%;animation:float3 22s ease-in-out infinite}
+.orb-4{width:340px;height:340px;background:radial-gradient(circle,var(--amber),transparent 65%);bottom:18%;left:12%;animation:float1 28s ease-in-out infinite reverse}
+@keyframes float1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,35px) scale(1.1)}}
+@keyframes float2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,-50px) scale(1.12)}}
+@keyframes float3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-35px,55px) scale(.9)}}
 
-        /* ═══════════════════════════════════════
-           ANIMATED BACKGROUND (particle grid)
-           ═══════════════════════════════════════ */
-        #bg-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: 0;
-            pointer-events: none;
-        }
+.hero-inner{position:relative;z-index:2;max-width:960px}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.5rem;padding:.42rem 1.1rem;border-radius:100px;
+  font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--violet);
+  background:rgba(107,78,230,.08);border:1px solid rgba(107,78,230,.16);
+  margin-bottom:2rem;opacity:0;animation:up .8s .1s forwards;
+}
+.hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 0 rgba(15,175,154,.5);animation:ping 2.2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(15,175,154,.45)}70%{box-shadow:0 0 0 9px rgba(15,175,154,0)}100%{box-shadow:0 0 0 0 rgba(15,175,154,0)}}
 
-        /* ═══════════════════════════════════════
-           CURSOR GLOW
-           ═══════════════════════════════════════ */
-        .cursor-glow {
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-            transform: translate(-50%, -50%);
-            transition: left 0.3s ease, top 0.3s ease;
-        }
+.hero h1{
+  font-size:clamp(3rem,9.5vw,7rem);font-weight:900;line-height:1.02;letter-spacing:-.05em;
+  opacity:0;animation:up .9s .2s forwards;
+}
+.hero h1 .grad{
+  background:linear-gradient(110deg,var(--violet) 0%,var(--coral) 40%,var(--amber) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  background-size:200% auto;animation:shine 6s linear infinite;
+}
+@keyframes shine{0%{background-position:0% center}100%{background-position:200% center}}
+.hero-sub{
+  max-width:640px;margin:1.8rem auto 0;font-size:clamp(1.02rem,2.2vw,1.25rem);
+  color:var(--ink-2);line-height:1.75;opacity:0;animation:up .9s .35s forwards;
+}
+.hero-sub b{color:var(--ink);font-weight:700}
+.hero-actions{display:flex;gap:1rem;margin-top:2.8rem;justify-content:center;flex-wrap:wrap;opacity:0;animation:up .9s .5s forwards}
 
-        /* ═══════════════════════════════════════
-           NAV
-           ═══════════════════════════════════════ */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
-            padding: 1.25rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(20px) saturate(1.4);
-            -webkit-backdrop-filter: blur(20px) saturate(1.4);
-            background: rgba(10,10,15,0.6);
-            border-bottom: 1px solid var(--border-subtle);
-        }
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;padding:1rem 2rem;border-radius:100px;
+  font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s;
+  will-change:transform;
+}
+.btn-primary{color:#fff;background:linear-gradient(135deg,var(--violet),var(--coral));box-shadow:0 16px 40px -14px rgba(107,78,230,.6)}
+.btn-primary:hover{box-shadow:0 22px 50px -14px rgba(107,78,230,.7)}
+.btn-ghost{color:var(--ink);background:var(--bg-2);border:1px solid var(--line);box-shadow:0 8px 22px -12px rgba(13,13,20,.15)}
+.btn-ghost:hover{border-color:var(--violet)}
 
-        .nav-logo {
-            font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:.5rem;color:var(--soft);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;opacity:0;animation:up .9s .85s forwards}
+.scroll-line{width:1px;height:40px;background:linear-gradient(var(--soft),transparent);animation:scrollP 2.4s ease infinite;transform-origin:top}
+@keyframes scrollP{0%{transform:scaleY(0);opacity:0}40%{opacity:1}100%{transform:scaleY(1);opacity:0}}
 
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-        .nav-links a {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            transition: color 0.2s;
-            font-weight: 500;
-        }
-        .nav-links a:hover { color: var(--text-primary); }
+@keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 
-        .nav-gh-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 1rem;
-            border: 1px solid var(--border-subtle);
-            border-radius: 100px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-            background: rgba(255,255,255,0.03);
-        }
-        .nav-gh-btn:hover {
-            border-color: var(--accent-1);
-            color: var(--text-primary);
-            background: rgba(99,102,241,0.08);
-        }
+/* ═══════════════════════════════════════════════
+   MARQUEE
+   ═══════════════════════════════════════════════ */
+.marquee-wrap{position:relative;padding:1.8rem 0;overflow:hidden;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);background:rgba(255,255,255,.45)}
+.marquee{display:flex;gap:1.6rem;width:max-content;animation:scrollX 40s linear infinite}
+.marquee-wrap:hover .marquee{animation-play-state:paused}
+.mq{display:flex;align-items:center;gap:.6rem;padding:.55rem 1.3rem;border-radius:100px;background:var(--bg-2);border:1px solid var(--line);font-size:.88rem;font-weight:600;color:var(--ink-2);white-space:nowrap}
+.mq i{width:7px;height:7px;border-radius:50%;font-style:normal}
+@keyframes scrollX{to{transform:translateX(-50%)}}
 
-        /* ═══════════════════════════════════════
-           HERO
-           ═══════════════════════════════════════ */
-        .hero {
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 6rem 2rem 4rem;
-        }
+/* ═══════════════════════════════════════════════
+   SECTION SHELL
+   ═══════════════════════════════════════════════ */
+.section{position:relative;padding:clamp(4.5rem,9vw,8rem) clamp(1.2rem,5vw,2rem);max-width:1280px;margin:0 auto}
+.section-head{max-width:720px;margin-bottom:3.8rem}
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--violet);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem}
+.eyebrow::before{content:"";width:28px;height:1.5px;background:var(--violet)}
+.section-title{font-size:clamp(2rem,4.8vw,3.3rem);font-weight:900;letter-spacing:-.04em;line-height:1.08}
+.section-title .grad{background:linear-gradient(110deg,var(--coral),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.section-desc{margin-top:1.1rem;color:var(--soft);font-size:1.06rem;line-height:1.8;max-width:580px}
 
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.35rem 1rem;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            border: 1px solid rgba(6, 182, 212, 0.25);
-            background: rgba(6, 182, 212, 0.06);
-            color: var(--accent-3);
-            margin-bottom: 2rem;
-            animation: fadeSlideUp 0.8s ease backwards;
-        }
+/* ═══════════════════════════════════════════════
+   RESEARCH TILES
+   ═══════════════════════════════════════════════ */
+.research-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;perspective:1500px}
+.tile{
+  position:relative;border-radius:var(--radius);padding:2.4rem;min-height:320px;
+  background:var(--bg-2);border:1px solid var(--line);overflow:hidden;
+  transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s,border-color .45s;
+  transform-style:preserve-3d;will-change:transform;display:flex;flex-direction:column;
+}
+.tile:hover{box-shadow:var(--shadow-lg);border-color:transparent}
+.tile-glow{position:absolute;inset:0;opacity:0;transition:opacity .55s;pointer-events:none}
+.tile:hover .tile-glow{opacity:1}
+.tile-1 .tile-glow{background:radial-gradient(450px circle at var(--mx,50%) var(--my,50%),rgba(107,78,230,.15),transparent 60%)}
+.tile-2 .tile-glow{background:radial-gradient(450px circle at var(--mx,50%) var(--my,50%),rgba(255,90,90,.15),transparent 60%)}
+.tile-3 .tile-glow{background:radial-gradient(450px circle at var(--mx,50%) var(--my,50%),rgba(27,163,214,.15),transparent 60%)}
+.tile-4 .tile-glow{background:radial-gradient(450px circle at var(--mx,50%) var(--my,50%),rgba(15,175,154,.15),transparent 60%)}
+.tile-icon{
+  width:64px;height:64px;border-radius:18px;display:grid;place-items:center;
+  margin-bottom:1.5rem;transform:translateZ(42px);position:relative;
+}
+.tile-1 .tile-icon{background:linear-gradient(135deg,rgba(107,78,230,.14),rgba(107,78,230,.04));color:var(--violet)}
+.tile-2 .tile-icon{background:linear-gradient(135deg,rgba(255,90,90,.14),rgba(255,90,90,.04));color:var(--coral)}
+.tile-3 .tile-icon{background:linear-gradient(135deg,rgba(27,163,214,.14),rgba(27,163,214,.04));color:var(--sky)}
+.tile-4 .tile-icon{background:linear-gradient(135deg,rgba(15,175,154,.14),rgba(15,175,154,.04));color:var(--mint)}
+.tile h3{font-size:1.55rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.55rem;transform:translateZ(32px)}
+.tile-en{font-family:var(--mono);font-size:.78rem;color:var(--soft);margin-bottom:1rem;transform:translateZ(22px)}
+.tile p{color:var(--ink-2);font-size:.97rem;line-height:1.75;transform:translateZ(20px);flex:1}
+.tile-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.4rem;transform:translateZ(26px)}
+.tag{padding:.32rem .78rem;border-radius:100px;font-size:.74rem;font-weight:600;background:rgba(13,13,20,.04);color:var(--ink-2)}
+.tile-1 .tag{background:rgba(107,78,230,.1);color:var(--violet)}
+.tile-2 .tag{background:rgba(255,90,90,.1);color:var(--coral)}
+.tile-3 .tag{background:rgba(27,163,214,.1);color:var(--sky)}
+.tile-4 .tag{background:rgba(15,175,154,.1);color:var(--mint)}
+.tile-num{position:absolute;top:1.8rem;right:2rem;font-family:var(--mono);font-size:.82rem;font-weight:700;color:var(--soft);opacity:.45}
 
-        .hero-badge .dot {
-            display: inline-block;
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background: var(--accent-3);
-            animation: pulse-dot 2s ease infinite;
-        }
+/* ═══════════════════════════════════════════════
+   FEATURE SHOWCASE (Robot + Newton)
+   ═══════════════════════════════════════════════ */
+.showcase{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem}
+.showcase-card{
+  position:relative;border-radius:var(--radius);overflow:hidden;background:var(--bg-2);
+  border:1px solid var(--line);transition:transform .4s,box-shadow .4s;border-color:var(--line);
+}
+.showcase-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.showcase-card img{width:100%;height:260px;object-fit:cover;display:block}
+.showcase-card .sc-body{padding:1.8rem 2rem 2rem}
+.showcase-card .sc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem}
+.showcase-card .sc-lang{font-family:var(--mono);font-size:.72rem;font-weight:700;padding:.28rem .65rem;border-radius:8px;background:rgba(13,13,20,.05);color:var(--ink-2)}
+.showcase-card .sc-stars{display:flex;align-items:center;gap:.3rem;font-size:.78rem;color:var(--soft);font-weight:600}
+.showcase-card h4{font-size:1.25rem;font-weight:800;letter-spacing:-.01em;margin-bottom:.5rem}
+.showcase-card p{font-size:.9rem;color:var(--soft);line-height:1.7}
+.showcase-card .sc-link{display:inline-flex;align-items:center;gap:.35rem;margin-top:1.2rem;font-size:.85rem;font-weight:700;color:var(--violet);transition:gap .25s}
+.showcase-card:hover .sc-link{gap:.6rem}
 
-        .hero h1 {
-            font-size: clamp(2.8rem, 8vw, 6rem);
-            font-weight: 900;
-            line-height: 1.05;
-            letter-spacing: -0.04em;
-            animation: fadeSlideUp 0.8s 0.15s ease backwards;
-        }
+/* ═══════════════════════════════════════════════
+   ATOMCODE PROMO
+   ═══════════════════════════════════════════════ */
+.atom{
+  position:relative;border-radius:40px;padding:clamp(2.8rem,5.5vw,5rem);overflow:hidden;
+  background:linear-gradient(135deg,#181530 0%,#2a1a4a 45%,#3a1842 100%);
+  color:#fff;box-shadow:var(--shadow-lg);
+}
+.atom::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(255,90,90,.48),transparent 60%);top:-180px;right:-140px;filter:blur(22px)}
+.atom::after{content:"";position:absolute;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(27,163,214,.42),transparent 60%);bottom:-200px;left:-120px;filter:blur(22px)}
+.atom-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:3.5rem;align-items:center}
+.atom .eyebrow{color:var(--amber)}
+.atom .eyebrow::before{background:var(--amber)}
+.atom h2{font-size:clamp(2.1rem,4.8vw,3.5rem);font-weight:900;letter-spacing:-.04em;line-height:1.06;margin-bottom:1.1rem}
+.atom h2 .grad{background:linear-gradient(110deg,var(--amber),var(--coral),var(--pink));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.atom p{color:rgba(255,255,255,.76);font-size:1.06rem;line-height:1.8;margin-bottom:1.7rem;max-width:490px}
+.atom-features{display:flex;flex-direction:column;gap:.9rem;margin-bottom:2.2rem}
+.atom-feat{display:flex;align-items:center;gap:.7rem;font-size:.96rem;color:rgba(255,255,255,.9)}
+.atom-feat .ck{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,var(--amber),var(--coral));flex-shrink:0}
+.atom-feat .ck svg{width:13px;height:13px}
+.atom-cta{display:inline-flex;align-items:center;gap:.5rem;padding:1.05rem 2.1rem;border-radius:100px;font-weight:700;font-size:1.02rem;background:#fff;color:#181530;box-shadow:0 16px 40px -14px rgba(0,0,0,.45);transition:transform .3s,box-shadow .3s}
+.atom-cta:hover{transform:translateY(-3px);box-shadow:0 24px 54px -14px rgba(0,0,0,.55)}
+.atom-invite{margin-top:1.1rem;font-family:var(--mono);font-size:.78rem;color:rgba(255,255,255,.45);word-break:break-all}
 
-        .hero h1 .gradient {
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+/* atom visual mock */
+.atom-mock{position:relative;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);padding:1.4rem;backdrop-filter:blur(8px)}
+.mock-bar{display:flex;align-items:center;gap:.45rem;margin-bottom:1.1rem}
+.mock-bar i{width:12px;height:12px;border-radius:50%;display:block}
+.mock-bar i:nth-child(1){background:#ff5a5a}.mock-bar i:nth-child(2){background:#ffb020}.mock-bar i:nth-child(3){background:#0faf9a}
+.mock-bar span{margin-left:.5rem;font-family:var(--mono);font-size:.74rem;color:rgba(255,255,255,.45)}
+.mock-line{height:10px;border-radius:6px;margin-bottom:.65rem;background:rgba(255,255,255,.1)}
+.mock-line.w70{width:70%}.mock-line.w90{width:90%}.mock-line.w50{width:50%}.mock-line.w80{width:80%}
+.mock-cursor{display:inline-block;width:8px;height:15px;background:var(--amber);border-radius:2px;vertical-align:middle;animation:blink 1.1s steps(2) infinite;margin-left:4px}
+@keyframes blink{50%{opacity:0}}
+.mock-code{font-family:var(--mono);font-size:.8rem;line-height:1.75;color:rgba(255,255,255,.85)}
+.mock-code .k{color:var(--pink)}.mock-code .s{color:var(--mint)}.mock-code .c{color:rgba(255,255,255,.4)}
 
-        .hero-sub {
-            max-width: 640px;
-            margin-top: 1.5rem;
-            font-size: clamp(1rem, 2vw, 1.2rem);
-            color: var(--text-secondary);
-            line-height: 1.7;
-            animation: fadeSlideUp 0.8s 0.3s ease backwards;
-        }
+/* ═══════════════════════════════════════════════
+   STATS
+   ═══════════════════════════════════════════════ */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1.3rem}
+.stat{padding:2.2rem 1.6rem;border-radius:24px;background:var(--bg-2);border:1px solid var(--line);text-align:left;transition:transform .4s,box-shadow .4s}
+.stat:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.stat-num{font-size:clamp(2.4rem,5.5vw,3.4rem);font-weight:900;letter-spacing:-.04em;line-height:1;background:linear-gradient(135deg,var(--violet),var(--coral));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.stat-num .plus{font-size:.6em}
+.stat-label{margin-top:.8rem;font-size:.86rem;color:var(--soft);font-weight:500}
 
-        .hero-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            animation: fadeSlideUp 0.8s 0.45s ease backwards;
-        }
+/* ═══════════════════════════════════════════════
+   CTA
+   ═══════════════════════════════════════════════ */
+.cta-band{position:relative;text-align:center;padding:clamp(4rem,8vw,7rem) clamp(1.2rem,5vw,2rem);border-radius:40px;overflow:hidden;background:var(--bg-2);border:1px solid var(--line)}
+.cta-band::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(650px circle at 20% 20%,rgba(107,78,230,.1),transparent 50%),
+  radial-gradient(550px circle at 80% 80%,rgba(255,90,90,.1),transparent 50%);}
+.cta-band>*{position:relative;z-index:1}
+.cta-band h2{font-size:clamp(2.1rem,5.5vw,3.6rem);font-weight:900;letter-spacing:-.04em;line-height:1.08;margin-bottom:1.1rem}
+.cta-band p{color:var(--soft);font-size:1.12rem;max-width:540px;margin:0 auto 2.2rem}
+.cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
 
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 2rem;
-            border-radius: 100px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-            color: #fff;
-            transition: all 0.3s;
-            box-shadow: 0 4px 20px rgba(99,102,241,0.25);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(99,102,241,0.4);
-        }
+/* ═══════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════ */
+footer{padding:4rem clamp(1.2rem,5vw,2rem) 2.5rem;border-top:1px solid var(--line);background:rgba(255,255,255,.45)}
+.foot-grid{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+.foot-brand{max-width:320px}
+.foot-brand p{color:var(--soft);font-size:.88rem;margin-top:.9rem;line-height:1.75}
+.foot-cols{display:flex;gap:3.5rem;flex-wrap:wrap}
+.foot-col h5{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink);margin-bottom:1.1rem}
+.foot-col a{display:block;font-size:.88rem;color:var(--soft);margin-bottom:.65rem;transition:color .2s}
+.foot-col a:hover{color:var(--violet)}
+.foot-bottom{max-width:1280px;margin:2.8rem auto 0;padding-top:1.8rem;border-top:1px solid var(--line-2);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--soft);font-size:.8rem}
 
-        .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 2rem;
-            border-radius: 100px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: 1px solid var(--border-subtle);
-            color: var(--text-secondary);
-            background: rgba(255,255,255,0.03);
-            transition: all 0.3s;
-        }
-        .btn-secondary:hover {
-            border-color: var(--accent-1);
-            color: var(--text-primary);
-            background: rgba(99,102,241,0.06);
-        }
+/* ═══════════════════════════════════════════════
+   REVEAL
+   ═══════════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.reveal-d1{transition-delay:.1s}.reveal-d2{transition-delay:.2s}.reveal-d3{transition-delay:.3s}.reveal-d4{transition-delay:.4s}
 
-        .hero-scroll {
-            position: absolute;
-            bottom: 2.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            opacity: 0.4;
-            animation: fadeSlideUp 0.8s 0.7s ease backwards;
-        }
-        .scroll-line {
-            width: 1px;
-            height: 40px;
-            background: linear-gradient(to bottom, var(--text-secondary), transparent);
-            animation: scrollPulse 2s ease infinite;
-        }
-
-        /* ═══════════════════════════════════════
-           SECTION COMMON
-           ═══════════════════════════════════════ */
-        .section {
-            position: relative;
-            z-index: 1;
-            padding: 6rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-label {
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--accent-1);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 0.75rem;
-        }
-
-        .section-title {
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            margin-bottom: 1rem;
-        }
-
-        .section-desc {
-            max-width: 600px;
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.8;
-        }
-
-        /* ═══════════════════════════════════════
-           RESEARCH AREAS
-           ═══════════════════════════════════════ */
-        .research-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.25rem;
-            margin-top: 3rem;
-        }
-
-        .research-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(12px);
-        }
-
-        .research-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            right: 0; bottom: 0;
-            border-radius: 16px;
-            opacity: 0;
-            transition: opacity 0.4s;
-            background: linear-gradient(135deg, rgba(99,102,241,0.04), rgba(6,182,212,0.04));
-        }
-
-        .research-card:hover {
-            border-color: rgba(99,102,241,0.2);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-        }
-        .research-card:hover::before { opacity: 1; }
-
-        .research-icon {
-            width: 48px; height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1.25rem;
-            background: rgba(99,102,241,0.08);
-            border: 1px solid rgba(99,102,241,0.1);
-        }
-
-        .research-card h3 {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.01em;
-        }
-
-        .research-card p {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        /* ═══════════════════════════════════════
-           TECH STACK / MARQUEE
-           ═══════════════════════════════════════ */
-        .tech-section {
-            position: relative;
-            z-index: 1;
-            padding: 4rem 2rem;
-            overflow: hidden;
-        }
-
-        .tech-marquee {
-            display: flex;
-            gap: 2rem;
-            animation: marquee 30s linear infinite;
-            width: max-content;
-        }
-
-        .tech-item {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            padding: 0.75rem 1.5rem;
-            border: 1px solid var(--border-subtle);
-            border-radius: 100px;
-            background: var(--bg-card);
-            font-size: 0.875rem;
-            font-weight: 500;
-            white-space: nowrap;
-            color: var(--text-secondary);
-            transition: color 0.2s, border-color 0.2s;
-        }
-        .tech-item:hover {
-            color: var(--text-primary);
-            border-color: var(--accent-1);
-        }
-
-        /* ═══════════════════════════════════════
-           STATS
-           ═══════════════════════════════════════ */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.5rem;
-            margin-top: 3rem;
-        }
-
-        .stat-card {
-            text-align: center;
-            padding: 2rem 1rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            backdrop-filter: blur(12px);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.03em;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* ═══════════════════════════════════════
-           ABOUT / MISSION
-           ═══════════════════════════════════════ */
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-            margin-top: 2rem;
-        }
-
-        .about-text p {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-            line-height: 1.8;
-        }
-
-        .about-text .highlight {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .about-image {
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid var(--border-subtle);
-            background: var(--bg-card);
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            backdrop-filter: blur(12px);
-        }
-
-        /* ═══════════════════════════════════════
-           UPDATES / LATEST
-           ═══════════════════════════════════════ */
-        .update-list {
-            margin-top: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .update-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.5rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-        }
-        .update-item:hover { border-color: rgba(99,102,241,0.15); }
-
-        .update-date {
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            min-width: 70px;
-        }
-        .update-tag {
-            padding: 0.15rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            background: rgba(99,102,241,0.1);
-            color: var(--accent-1);
-        }
-
-        /* ═══════════════════════════════════════
-           FOOTER
-           ═══════════════════════════════════════ */
-        footer {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 4rem 2rem;
-            border-top: 1px solid var(--border-subtle);
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        footer .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-        footer .footer-links a {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            transition: color 0.2s;
-        }
-        footer .footer-links a:hover { color: var(--text-primary); }
-
-        /* ═══════════════════════════════════════
-           ANIMATIONS
-           ═══════════════════════════════════════ */
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50%      { opacity: 0.3; }
-        }
-
-        @keyframes scrollPulse {
-            0%, 100% { opacity: 1; }
-            50%      { opacity: 0.2; }
-        }
-
-        @keyframes marquee {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ═══════════════════════════════════════
-           RESPONSIVE
-           ═══════════════════════════════════════ */
-        @media (max-width: 768px) {
-            nav { padding: 1rem 1.25rem; }
-            .nav-links { display: none; }
-            .hero h1 { font-size: clamp(2rem, 12vw, 3rem); }
-            .section { padding: 4rem 1.25rem; }
-            .research-grid { grid-template-columns: 1fr; }
-            .about-content { grid-template-columns: 1fr; gap: 2rem; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-        }
-    </style>
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════ */
+@media(max-width:960px){
+  .atom-grid{grid-template-columns:1fr;gap:2.5rem}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .showcase{grid-template-columns:1fr}
+}
+@media(max-width:780px){
+  .nav-links{display:none}
+  .nav-links.open{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:rgba(245,240,232,.96);backdrop-filter:blur(22px);padding:1.5rem;gap:1.2rem;border-bottom:1px solid var(--line)}
+  .nav-burger{display:flex}
+  .research-grid{grid-template-columns:1fr}
+  .tile{min-height:auto}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .orb{animation:none}
+}
+</style>
 </head>
 <body>
 
-    <!-- ═══ ANIMATED BG ═══ -->
-    <canvas id="bg-canvas"></canvas>
-    <div class="cursor-glow" id="cursorGlow"></div>
+<div class="cursor-blob" id="blob"></div>
 
-    <!-- ═══ NAV ═══ -->
-    <nav>
-        <span class="nav-logo">Gewis Lab</span>
-        <div class="nav-links">
-            <a href="#research">研究领域</a>
-            <a href="#about">关于</a>
-            <a href="#updates">动态</a>
-            <a href="https://gitcode.com/GewisLab" target="_blank" rel="noopener" class="nav-gh-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.84 9.49.5.09.68-.22.68-.48 0-.24-.01-1.04-.01-1.89-2.78.6-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.86 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48C19.14 20.17 22 16.42 22 12c0-5.523-4.477-10-10-10z"/></svg>
-                GitCode
-            </a>
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <a href="#" class="nav-logo"><span class="logo-mark">G</span>Gewis<span style="color:var(--soft);font-weight:500">Lab</span></a>
+  <div class="nav-links" id="navLinks">
+    <a href="#research">研究方向</a>
+    <a href="#projects">开源项目</a>
+    <a href="#atomcode">AtomCode</a>
+    <a href="#about">关于我们</a>
+    <a href="https://atomcode.atomgit.com/invite/3QWASEPJ" target="_blank" rel="noopener" class="nav-cta"><span class="spark"></span>体验 AtomCode</a>
+  </div>
+  <div class="nav-burger" id="burger"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="orb orb-1" data-depth="2"></div>
+  <div class="orb orb-2" data-depth="3"></div>
+  <div class="orb orb-3" data-depth="1.5"></div>
+  <div class="orb orb-4" data-depth="2.5"></div>
+
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="dot"></span>Gewis Lab × 天津商业大学 · AI Research Team</div>
+    <h1>让智能<br><span class="grad">触手可及</span></h1>
+    <p class="hero-sub">我们聚焦 <b>具身智能</b>、<b>多模态大模型</b>、<b>深度学习</b> 与 <b>数理统计</b>，<br>在感知、推理与决策的交汇处，推动人工智能基础研究与应用落地。</p>
+    <div class="hero-actions">
+      <a href="#research" class="btn btn-primary magnetic">探索研究方向
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="https://atomcode.atomgit.com/invite/3QWASEPJ" target="_blank" rel="noopener" class="btn btn-ghost magnetic">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16"/></svg>
+        体验 AtomCode
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-scroll"><span>Scroll</span><div class="scroll-line"></div></div>
+</header>
+
+<!-- ═══ MARQUEE ═══ -->
+<div class="marquee-wrap">
+  <div class="marquee" id="marquee">
+    <span class="mq"><i style="background:var(--violet)"></i>具身智能</span>
+    <span class="mq"><i style="background:var(--coral)"></i>多模态大模型</span>
+    <span class="mq"><i style="background:var(--sky)"></i>深度学习</span>
+    <span class="mq"><i style="background:var(--mint)"></i>数理统计</span>
+    <span class="mq"><i style="background:var(--amber)"></i>VLA 模型</span>
+    <span class="mq"><i style="background:var(--pink)"></i>YOLO 检测</span>
+    <span class="mq"><i style="background:var(--violet)"></i>LoRA 微调</span>
+    <span class="mq"><i style="background:var(--sky)"></i>时序预测</span>
+    <span class="mq"><i style="background:var(--mint)"></i>AI for Science</span>
+    <span class="mq"><i style="background:var(--coral)"></i>视觉-语言模型</span>
+  </div>
+</div>
+
+<!-- ═══ RESEARCH ═══ -->
+<section class="section" id="research">
+  <div class="section-head reveal">
+    <span class="eyebrow">Research Directions</span>
+    <h2 class="section-title">四个方向，<span class="grad">一种智能</span></h2>
+    <p class="section-desc">从底层感知到高层决策，从数理基础到前沿大模型——我们在人工智能的核心版图上，构建完整的研究脉络。</p>
+  </div>
+
+  <div class="research-grid">
+    <article class="tile tile-1 reveal" data-tilt>
+      <div class="tile-glow"></div>
+      <span class="tile-num">01</span>
+      <div class="tile-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h.01M16 16h.01"/></svg>
+      </div>
+      <h3>具身智能</h3>
+      <div class="tile-en">Embodied AI · VLA</div>
+      <p>探索视觉-语言-动作（VLA）统一架构，将感知、推理与机器人动作策略端到端融合，让智能体在真实物理世界中自主感知与操控。</p>
+      <div class="tile-tags"><span class="tag">VLA 模型</span><span class="tag">机器人感知</span><span class="tag">运动控制</span></div>
+    </article>
+
+    <article class="tile tile-2 reveal reveal-d1" data-tilt>
+      <div class="tile-glow"></div>
+      <span class="tile-num">02</span>
+      <div class="tile-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-4 5-4 13 0 18 4-5 4-13 0-18z"/><path d="M3 12c5-4 13-4 18 0-5 4-13 4-18 0z"/></svg>
+      </div>
+      <h3>多模态大模型</h3>
+      <div class="tile-en">Multimodal LLM · VL</div>
+      <p>构建与微调视觉-语言（VL）模型，实现跨模态理解与推理；运用 LoRA 等参数高效微调技术，降低训练成本、提升泛化能力。</p>
+      <div class="tile-tags"><span class="tag">VL 模型</span><span class="tag">LoRA 微调</span><span class="tag">跨模态推理</span></div>
+    </article>
+
+    <article class="tile tile-3 reveal reveal-d2" data-tilt>
+      <div class="tile-glow"></div>
+      <span class="tile-num">03</span>
+      <div class="tile-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>
+      </div>
+      <h3>深度学习</h3>
+      <div class="tile-en">Deep Learning · CV</div>
+      <p>持续优化经典视觉任务，基于 YOLO 系列构建高效目标检测与图像分割系统，在精度与效率之间寻找最优平衡。</p>
+      <div class="tile-tags"><span class="tag">YOLO 检测</span><span class="tag">图像分割</span><span class="tag">Transformer</span></div>
+    </article>
+
+    <article class="tile tile-4 reveal reveal-d3" data-tilt>
+      <div class="tile-glow"></div>
+      <span class="tile-num">04</span>
+      <div class="tile-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg>
+      </div>
+      <h3>数理统计</h3>
+      <div class="tile-en">Mathematical Statistics</div>
+      <p>依托数理基础与时序分析方法，完成数据挖掘、建模与趋势预测；融合物理机理与数据驱动，探索 AI for Science 新范式。</p>
+      <div class="tile-tags"><span class="tag">时序分析</span><span class="tag">数据建模</span><span class="tag">AI for Science</span></div>
+    </article>
+  </div>
+</section>
+
+<!-- ═══ TOP 2 PROJECTS ═══ -->
+<section class="section" id="projects">
+  <div class="section-head reveal">
+    <span class="eyebrow">Open Source</span>
+    <h2 class="section-title">精选<span class="grad">开源项目</span></h2>
+    <p class="section-desc">把研究成果变成人人可用的开源代码——从物理知情成像到机器人竞赛，每一行代码都承载着对智能的探索。</p>
+  </div>
+
+  <div class="showcase reveal">
+    <a class="showcase-card" href="https://gitcode.com/GewisLab/Robot-competition" target="_blank" rel="noopener">
+      <img src="assets/hero-robot.jpg" alt="具身智能机器人" loading="lazy">
+      <div class="sc-body">
+        <div class="sc-top">
+          <span class="sc-lang">Python</span>
+          <span class="sc-stars">★ 11</span>
         </div>
-    </nav>
+        <h4>华北五省机器人田径</h4>
+        <p>融合感知、规划与控制算法，在真实赛场中验证具身智能的工程落地能力。面向机器人竞赛的完整解决方案。</p>
+        <span class="sc-link">查看项目 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+    </a>
 
-    <!-- ═══ HERO ═══ -->
-    <section class="hero">
-        <div class="hero-badge">
-            <span class="dot"></span>
-            AI Research Team · TJCU
+    <a class="showcase-card" href="https://gitcode.com/GewisLab/Newtons_rings" target="_blank" rel="noopener">
+      <img src="assets/newton-rings.jpg" alt="牛顿环 AI for Science" loading="lazy">
+      <div class="sc-body">
+        <div class="sc-top">
+          <span class="sc-lang">Python</span>
+          <span class="sc-stars">★ 11</span>
         </div>
+        <h4>Newtons_rings</h4>
+        <p>物理知情计算成像框架，解决光谱退相干挑战。集成可微波光学正向模型与传感器退化 pipeline，提供多级别基准测试。</p>
+        <span class="sc-link">查看项目 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+    </a>
+  </div>
+</section>
 
-        <h1>
-            <span class="gradient">Gewis Lab</span>
-        </h1>
-
-        <p class="hero-sub">
-            聚焦深度学习 · 具身智能 · 多模态技术<br>
-            致力于推动人工智能基础研究与应用落地
-        </p>
-
-        <div class="hero-actions">
-            <a href="#research" class="btn-primary">
-                探索研究方向
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-            <a href="https://gitcode.com/GewisLab" target="_blank" rel="noopener" class="btn-secondary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.84 9.49.5.09.68-.22.68-.48 0-.24-.01-1.04-.01-1.89-2.78.6-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.41.1 2.66.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.86 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48C19.14 20.17 22 16.42 22 12c0-5.523-4.477-10-10-10z"/></svg>
-                关注我们
-            </a>
+<!-- ═══ ATOMCODE ═══ -->
+<section class="section" id="atomcode">
+  <div class="atom reveal">
+    <div class="atom-grid">
+      <div>
+        <span class="eyebrow">Powered by AtomGit</span>
+        <h2>用 <span class="grad">AtomCode</span><br>重新定义编程</h2>
+        <p>由 AtomGit 打造的 AI 编程助手，专为开发者设计。在对话中完成编码、调试与重构，搭配可扩展的技能生态，让每一次创造都更轻盈。</p>
+        <div class="atom-features">
+          <div class="atom-feat"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#181530" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>对话式编程，自然语言直达代码</div>
+          <div class="atom-feat"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#181530" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>技能生态（Skills），可装可造可分享</div>
+          <div class="atom-feat"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#181530" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>深度集成代码托管，研发一体化</div>
+          <div class="atom-feat"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#181530" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>大模型编程方案，限时免费体验</div>
         </div>
+        <a href="https://atomcode.atomgit.com/invite/3QWASEPJ" target="_blank" rel="noopener" class="atom-cta magnetic">
+          立即免费体验
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <div class="atom-invite">邀请链接：atomcode.atomgit.com/invite/3QWASEPJ</div>
+      </div>
 
-        <div class="hero-scroll">
-            <span>Scroll</span>
-            <div class="scroll-line"></div>
+      <div class="atom-mock">
+        <div class="mock-bar"><i></i><i></i><i></i><span>main.py — AtomCode</span></div>
+        <div class="mock-code">
+          <div><span class="c"># 让 AtomCode 帮你写一个具身智能抓取策略</span></div>
+          <div><span class="k">def</span> grasp_policy(obs):</div>
+          <div>&nbsp;&nbsp;vla = <span class="s">"vision-language-action"</span></div>
+          <div>&nbsp;&nbsp;action = model.predict(obs)<span class="mock-cursor"></span></div>
+          <div>&nbsp;&nbsp;<span class="k">return</span> action</div>
         </div>
-    </section>
+        <div class="mock-line w90" style="margin-top:1.2rem"></div>
+        <div class="mock-line w70"></div>
+        <div class="mock-line w80"></div>
+        <div class="mock-line w50"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- ═══ RESEARCH AREAS ═══ -->
-    <section class="section" id="research">
-        <div class="reveal">
-            <p class="section-label">/ 研究方向</p>
-            <h2 class="section-title">Research Areas</h2>
-            <p class="section-desc">团队长期深耕人工智能核心领域，从底层感知到高层决策，构建完整的技术栈。</p>
-        </div>
+<!-- ═══ STATS ═══ -->
+<section class="section">
+  <div class="stats">
+    <div class="stat reveal"><div class="stat-num" data-count="4">0</div><div class="stat-label">核心研究方向</div></div>
+    <div class="stat reveal reveal-d1"><div class="stat-num" data-count="12" data-suffix="+">0</div><div class="stat-label">开源项目</div></div>
+    <div class="stat reveal reveal-d2"><div class="stat-num" data-count="84" data-suffix="+">0</div><div class="stat-label">组织关注者</div></div>
+    <div class="stat reveal reveal-d3"><div class="stat-num" data-count="3" data-suffix="+">0</div><div class="stat-label">省部级科研奖项</div></div>
+  </div>
+</section>
 
-        <div class="research-grid">
-            <div class="research-card reveal">
-                <div class="research-icon">🤖</div>
-                <h3>机器人感知与控制</h3>
-                <p>融合多传感器信息，构建鲁棒的机器人感知系统，实现复杂环境下的自主导航与精准操控。</p>
-            </div>
+<!-- ═══ ABOUT / CTA ═══ -->
+<section class="section" id="about">
+  <div class="cta-band reveal">
+    <span class="eyebrow">About · Join Us</span>
+    <h2>以研促教，以用促学<br>欢迎加入 <span style="background:linear-gradient(110deg,var(--violet),var(--coral));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">Gewis Lab</span></h2>
+    <p>我们隶属于天津商业大学，深耕人工智能基础研究与智能系统应用，多次获得省部级科研奖励。诚邀全球师生、研究者与开发者关注、使用并参与我们的开源项目。</p>
+    <div class="cta-actions">
+      <a href="https://gitcode.com/GewisLab" target="_blank" rel="noopener" class="btn btn-primary magnetic">关注 GewisLab
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+      </a>
+      <a href="https://gitcode.com/TJCU" target="_blank" rel="noopener" class="btn btn-ghost magnetic">访问 TJCU 组织
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
 
-            <div class="research-card reveal">
-                <div class="research-icon">👁️</div>
-                <h3>目标检测与图像分割</h3>
-                <p>基于 YOLO 系列等前沿架构，持续优化视觉检测与分割算法，在效率与精度之间寻求最优平衡。</p>
-            </div>
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-brand">
+      <a href="#" class="nav-logo"><span class="logo-mark">G</span>Gewis<span style="color:var(--soft);font-weight:500">Lab</span></a>
+      <p>天津商业大学 AI 研究团队 · 聚焦具身智能、多模态大模型、深度学习与数理统计，推动人工智能基础研究与应用落地。</p>
+    </div>
+    <div class="foot-cols">
+      <div class="foot-col">
+        <h5>组织</h5>
+        <a href="https://gitcode.com/GewisLab" target="_blank" rel="noopener">GewisLab</a>
+        <a href="https://gitcode.com/TJCU" target="_blank" rel="noopener">天津商业大学</a>
+        <a href="https://atomgit.com/GewisLab" target="_blank" rel="noopener">AtomGit 主页</a>
+      </div>
+      <div class="foot-col">
+        <h5>工具</h5>
+        <a href="https://atomcode.atomgit.com/invite/3QWASEPJ" target="_blank" rel="noopener">AtomCode</a>
+        <a href="https://gitcode.com" target="_blank" rel="noopener">GitCode</a>
+        <a href="https://atomgit.com" target="_blank" rel="noopener">AtomGit</a>
+      </div>
+      <div class="foot-col">
+        <h5>联系</h5>
+        <a href="mailto:1832259@aliyun.com">1832259@aliyun.com</a>
+        <a href="#">天津 · Tianjin</a>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 Gewis Lab · AI Research Team @ TJCU</span>
+    <span>Built with curiosity & dopamine colors.</span>
+  </div>
+</footer>
 
-            <div class="research-card reveal">
-                <div class="research-icon">🧠</div>
-                <h3>具身智能 · VLA 模型</h3>
-                <p>探索视觉-语言-动作（VLA）统一架构，将感知、推理与决策端到端融合，推动具身智能落地。</p>
-            </div>
+<script>
+/* ─── Cursor Blob ─── */
+const blob=document.getElementById('blob');
+let bx=innerWidth/2,by=innerHeight/2,tx=bx,ty=by;
+addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+(function loop(){bx+=(tx-bx)*.12;by+=(ty-by)*.12;blob.style.transform=`translate(${bx}px,${by}px) translate(-50%,-50%)`;requestAnimationFrame(loop)})();
 
-            <div class="research-card reveal">
-                <div class="research-icon">📈</div>
-                <h3>时序建模与分析</h3>
-                <p>针对时间序列数据的建模、预测与异常检测，应用于科学实验、工业监控等真实场景。</p>
-            </div>
+/* ─── Hero Orb Parallax ─── */
+const orbs=document.querySelectorAll('.orb');
+addEventListener('mousemove',e=>{
+  const cx=(e.clientX/innerWidth-.5),cy=(e.clientY/innerHeight-.5);
+  orbs.forEach(o=>{const d=parseFloat(o.dataset.depth||2);o.style.marginLeft=(cx*d*16)+'px';o.style.marginTop=(cy*d*16)+'px'});
+});
 
-            <div class="research-card reveal">
-                <div class="research-icon">🔬</div>
-                <h3>AI for Science</h3>
-                <p>将物理机理与数据驱动方法深度融合，用人工智能加速科学发现与工程仿真。</p>
-            </div>
+/* ─── Nav scroll state + burger ─── */
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>30));
+const burger=document.getElementById('burger'),navLinks=document.getElementById('navLinks');
+burger.addEventListener('click',()=>navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));
 
-            <div class="research-card reveal">
-                <div class="research-icon">⚡</div>
-                <h3>模型高效微调</h3>
-                <p>应用 LoRA、Adapter 等参数高效微调技术，大幅降低大模型训练成本，提升跨任务泛化能力。</p>
-            </div>
-        </div>
-    </section>
+/* ─── Scroll Reveal ─── */
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}}),{threshold:.12,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-    <!-- ═══ STATS ═══ -->
-    <section class="section">
-        <div class="stats-grid">
-            <div class="stat-card reveal">
-                <div class="stat-number" data-count="15">0</div>
-                <div class="stat-label">GitHub 关注者</div>
-            </div>
-            <div class="stat-card reveal">
-                <div class="stat-number" data-count="6">0</div>
-                <div class="stat-label">研究方向</div>
-            </div>
-            <div class="stat-card reveal">
-                <div class="stat-number" data-count="3">0</div>
-                <div class="stat-label">省部级奖项</div>
-            </div>
-            <div class="stat-card reveal">
-                <div class="stat-number" data-count="5">0</div>
-                <div class="stat-label">核心算法框架</div>
-            </div>
-        </div>
-    </section>
+/* ─── 3D Tilt on tiles ─── */
+document.querySelectorAll('[data-tilt]').forEach(t=>{
+  t.addEventListener('mousemove',e=>{
+    const r=t.getBoundingClientRect();
+    const px=(e.clientX-r.left)/r.width,py=(e.clientY-r.top)/r.height;
+    const rx=(.5-py)*12,ry=(px-.5)*14;
+    t.style.transform=`perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px)`;
+    t.style.setProperty('--mx',px*100+'%');t.style.setProperty('--my',py*100+'%');
+  });
+  t.addEventListener('mouseleave',()=>{t.style.transform=''});
+});
 
-    <!-- ═══ ABOUT ═══ -->
-    <section class="section" id="about">
-        <div class="reveal">
-            <p class="section-label">/ 关于我们</p>
-            <h2 class="section-title">About Gewis Lab</h2>
-        </div>
-        <div class="about-content">
-            <div class="about-text reveal">
-                <p>
-                    <span class="highlight">Gewis Lab</span> 是一支专注于人工智能基础研究与智能系统应用的学术团队，隶属于 <span class="highlight">TJCU</span>（天津商业大学）。
-                </p>
-                <p>
-                    团队坚持 <span class="highlight">"以研促教、以用促学"</span> 的理念，在深度学习、机器视觉、具身智能等前沿领域积累了丰富的科研与工程实践经验。
-                </p>
-                <p>
-                    我们曾多次获得省部级及以上科研奖励，致力于开放协作与技术创新，诚邀全球研究者关注与参与我们的开源项目！
-                </p>
-                <p style="margin-top:1.5rem;">
-                    <a href="https://gitcode.com/GewisLab" target="_blank" rel="noopener" class="btn-primary" style="font-size:0.85rem; padding: 0.6rem 1.5rem;">
-                        查看开源项目 →
-                    </a>
-                </p>
-            </div>
-            <div class="about-image reveal">
-                <span>🧪</span>
-            </div>
-        </div>
-    </section>
+/* ─── Magnetic buttons ─── */
+document.querySelectorAll('.magnetic').forEach(m=>{
+  m.addEventListener('mousemove',e=>{
+    const r=m.getBoundingClientRect();
+    const x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2;
+    m.style.transform=`translate(${x*.28}px,${y*.38}px)`;
+  });
+  m.addEventListener('mouseleave',()=>m.style.transform='');
+});
 
-    <!-- ═══ UPDATES ═══ -->
-    <section class="section" id="updates">
-        <div class="reveal">
-            <p class="section-label">/ 最新动态</p>
-            <h2 class="section-title">Latest Updates</h2>
-        </div>
+/* ─── Counters ─── */
+const co=new IntersectionObserver(es=>es.forEach(en=>{
+  if(!en.isIntersecting)return;
+  const el=en.target,target=+el.dataset.count,suf=el.dataset.suffix||'';
+  let cur=0;const step=Math.max(1,Math.ceil(target/45));
+  const t=setInterval(()=>{cur+=step;if(cur>=target){el.innerHTML=target+(suf?`<span class="plus">${suf}</span>`:'');clearInterval(t)}else el.textContent=cur},28);
+  co.unobserve(el);
+}),{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>co.observe(el));
 
-        <div class="update-list">
-            <div class="update-item reveal">
-                <span class="update-date">2026.06</span>
-                <span class="update-tag">New</span>
-                <span>Gewis Lab 开源组织正式上线，欢迎关注！</span>
-            </div>
-            <div class="update-item reveal">
-                <span class="update-date">2026.06</span>
-                <span class="update-tag" style="background:rgba(6,182,212,0.1);color:var(--accent-3);">Research</span>
-                <span>VLA 统一架构项目启动，推进具身智能应用落地</span>
-            </div>
-            <div class="update-item reveal">
-                <span class="update-date">2025.12</span>
-                <span class="update-tag" style="background:rgba(139,92,246,0.1);color:var(--accent-2);">Award</span>
-                <span>团队获得省部级科研奖励表彰</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ TECH MARQUEE ═══ -->
-    <section class="tech-section">
-        <div class="tech-marquee" id="techMarquee">
-            <span class="tech-item">Python</span>
-            <span class="tech-item">PyTorch</span>
-            <span class="tech-item">YOLO</span>
-            <span class="tech-item">LoRA</span>
-            <span class="tech-item">Transformer</span>
-            <span class="tech-item">VLA</span>
-            <span class="tech-item">ROS</span>
-            <span class="tech-item">OpenCV</span>
-            <span class="tech-item">CUDA</span>
-            <span class="tech-item">Docker</span>
-            <!-- duplicate for seamless loop -->
-            <span class="tech-item">Python</span>
-            <span class="tech-item">PyTorch</span>
-            <span class="tech-item">YOLO</span>
-            <span class="tech-item">LoRA</span>
-            <span class="tech-item">Transformer</span>
-            <span class="tech-item">VLA</span>
-            <span class="tech-item">ROS</span>
-            <span class="tech-item">OpenCV</span>
-            <span class="tech-item">CUDA</span>
-            <span class="tech-item">Docker</span>
-        </div>
-    </section>
-
-    <!-- ═══ FOOTER ═══ -->
-    <footer>
-        <p>© 2026 Gewis Lab · AI Research Team @ TJCU</p>
-        <div class="footer-links">
-            <a href="https://gitcode.com/GewisLab" target="_blank" rel="noopener">GitCode</a>
-            <a href="https://atomgit.com/GewisLab" target="_blank" rel="noopener">AtomGit</a>
-            <a href="mailto:1832259@aliyun.com">Contact</a>
-        </div>
-    </footer>
-
-    <!-- ═══ JS ═══ -->
-    <script>
-        // ─── Particle Canvas ───
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let W, H, particles = [];
-
-        function resize() {
-            W = canvas.width = window.innerWidth;
-            H = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        const COUNT = 60;
-        for (let i = 0; i < COUNT; i++) {
-            particles.push({
-                x: Math.random() * W,
-                y: Math.random() * H,
-                vx: (Math.random() - 0.5) * 0.3,
-                vy: (Math.random() - 0.5) * 0.3,
-                r: Math.random() * 1.2 + 0.3,
-            });
-        }
-
-        function drawParticles() {
-            ctx.clearRect(0, 0, W, H);
-            for (let p of particles) {
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0) p.x = W;
-                if (p.x > W) p.x = 0;
-                if (p.y < 0) p.y = H;
-                if (p.y > H) p.y = 0;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(99,102,241,0.25)';
-                ctx.fill();
-            }
-
-            // draw connections
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 160) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(99,102,241,${0.06 * (1 - dist / 160)})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(drawParticles);
-        }
-        drawParticles();
-
-        // ─── Cursor Glow ───
-        const glow = document.getElementById('cursorGlow');
-        document.addEventListener('mousemove', e => {
-            glow.style.left = e.clientX + 'px';
-            glow.style.top = e.clientY + 'px';
-        });
-
-        // ─── Scroll Reveal ───
-        const reveals = document.querySelectorAll('.reveal');
-        const observer = new IntersectionObserver(entries => {
-            for (const entry of entries) {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            }
-        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-        reveals.forEach(el => observer.observe(el));
-
-        // ─── Counter Animation ───
-        const counters = document.querySelectorAll('.stat-number');
-        const counterObserver = new IntersectionObserver(entries => {
-            for (const entry of entries) {
-                if (entry.isIntersecting) {
-                    const el = entry.target;
-                    const target = parseInt(el.dataset.count);
-                    let current = 0;
-                    const step = Math.max(1, Math.floor(target / 40));
-                    const timer = setInterval(() => {
-                        current += step;
-                        if (current >= target) {
-                            el.textContent = target;
-                            clearInterval(timer);
-                        } else {
-                            el.textContent = current;
-                        }
-                    }, 30);
-                    counterObserver.unobserve(el);
-                }
-            }
-        }, { threshold: 0.5 });
-        counters.forEach(el => counterObserver.observe(el));
-    </script>
-
+/* ─── Duplicate marquee for seamless loop ─── */
+const mq=document.getElementById('marquee');
+mq.innerHTML+=mq.innerHTML;
+</script>
 </body>
 </html>
