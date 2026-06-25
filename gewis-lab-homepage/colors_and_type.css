@@ -1,0 +1,99 @@
+/* ═══════════════════════════════════════════════════════
+   Gewis Lab — Light Blue Warm Brand CSS
+   Tone: Light blue warm with orange accent, university feel
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Color System ── */
+  --color-bg: #F0F6FF;
+  --color-bg-elevated: #FFFFFF;
+  --color-bg-surface: #F7FAFF;
+  --color-bg-overlay: rgba(240, 246, 255, 0.9);
+
+  --color-text-primary: #1A2332;
+  --color-text-secondary: #4A5568;
+  --color-text-tertiary: #8896A6;
+  --color-text-inverse: #FFFFFF;
+
+  --color-brand: #E8720C;
+  --color-brand-hover: #D4680A;
+  --color-brand-muted: rgba(232, 114, 12, 0.1);
+  --color-brand-subtle: rgba(232, 114, 12, 0.05);
+
+  --color-state-success: #16A34A;
+  --color-state-warning: #E8720C;
+  --color-state-error: #DC2626;
+  --color-state-info: #6366F1;
+
+  --color-border: rgba(26, 35, 50, 0.08);
+  --color-border-hover: rgba(26, 35, 50, 0.15);
+  --color-divider: rgba(26, 35, 50, 0.05);
+
+  /* ── Radius Scale ── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* ── Typography ── */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", "Fira Code", ui-monospace, "Cascadia Code", monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
+  --text-7xl: 4.5rem;
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+
+  --tracking-tight: -0.03em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.08em;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+  --weight-black: 900;
+
+  /* ── Spacing ── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* ── Surface Depth ── */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.04);
+  --shadow-glow-brand: 0 0 40px rgba(232, 114, 12, 0.15);
+  --shadow-glow-accent: 0 0 40px rgba(220, 38, 38, 0.15);
+
+  /* ── Transitions ── */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+}

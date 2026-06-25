@@ -1,0 +1,95 @@
+{
+  "data": [
+    {
+      "id": "page-index",
+      "title": "首页",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1750872000000,
+      "canvasData": {
+        "x": 0,
+        "y": 0,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/index.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "image-001",
+      "title": "暖色科技主视觉背景",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1750872000000,
+      "canvasData": {
+        "x": 0,
+        "y": 1388
+      },
+      "devMetadata": {
+        "imageSrc": "assets/hero-tech-warm.jpg"
+      }
+    },
+    {
+      "id": "image-002",
+      "title": "具身智能机器人项目图",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1750872000000,
+      "canvasData": {
+        "x": 620,
+        "y": 1388
+      },
+      "devMetadata": {
+        "imageSrc": "assets/hero-robot.jpg"
+      }
+    },
+    {
+      "id": "image-003",
+      "title": "牛顿环 AI for Science 项目图",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1750872000000,
+      "canvasData": {
+        "x": 1240,
+        "y": 1388
+      },
+      "devMetadata": {
+        "imageSrc": "assets/newton-rings.jpg"
+      }
+    },
+    {
+      "id": "image-004",
+      "title": "具身智能研究方向插图",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1750872000000,
+      "canvasData": {
+        "x": 1860,
+        "y": 1388
+      },
+      "devMetadata": {
+        "imageSrc": "assets/feature-embodied-ai.jpg"
+      }
+    },
+    {
+      "id": "image-005",
+      "title": "多模态大模型研究方向插图",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1750872000000,
+      "canvasData": {
+        "x": 2480,
+        "y": 1388
+      },
+      "devMetadata": {
+        "imageSrc": "assets/feature-multimodal.jpg"
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": true,
+    "deviceType": "desktop",
+    "projectName": "Gewis Lab 暖色科技主页"
+  }
+}

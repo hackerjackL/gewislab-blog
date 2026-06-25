@@ -1,0 +1,25 @@
+{
+  "root": {
+    "nodeId": "gen-project-shell",
+    "kind": "project-shell",
+    "pageIds": ["page-index"],
+    "output": "partials/project-shell.html",
+    "sharedRegions": ["nav", "footer"],
+    "privateRegions": [],
+    "mutableSlots": ["activeNavItem", "pageTitle"],
+    "status": "generated",
+    "children": [
+      {
+        "nodeId": "gen-page-index",
+        "kind": "page-leaf",
+        "pageIds": ["page-index"],
+        "output": "pages/index.html",
+        "sharedRegions": [],
+        "privateRegions": ["hero section", "marquee", "research tiles", "projects showcase", "atomcode promo", "stats", "CTA band"],
+        "mutableSlots": ["activeNavItem"],
+        "status": "generated",
+        "children": []
+      }
+    ]
+  }
+}

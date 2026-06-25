@@ -1,0 +1,139 @@
+{
+  "project": {
+    "name": "Gewis Lab 暖色科技主页",
+    "path": "d:\\lhw\\PythonProject\\gewislab-blog\\gewis-lab-homepage",
+    "operation": "create",
+    "deviceType": "desktop",
+    "language": "zh-CN",
+    "dashboardMode": false,
+    "replicationMode": null,
+    "sourceUrl": null,
+    "visualSpecExcerpt": null,
+    "styleDefinitionBrief": "AI research lab homepage with warm amber/coral tech palette on dark background, rich particle animations, 3D card tilt, magnetic buttons, scroll reveals, and interactive code terminal",
+    "designRead": "AI lab homepage / researchers & developers / warm tech with playful energy / medium density / avoid cold blue-purple generic AI aesthetic",
+    "designDials": {
+      "layoutVariance": 4,
+      "motionIntensity": 5,
+      "visualDensity": 3
+    },
+    "styleContinuityAnchors": {
+      "colorSystem": {
+        "primaryColorRole": "warm amber #FF8906 for brand identity, CTAs, and accent highlights",
+        "brandHuePolicy": "single brand hue (amber) with coral accent for energy; no secondary brand hue",
+        "stateColors": "success=#2CB67D, warning=#FF8906, error=#F25F4C, info=#7F5AF0"
+      },
+      "shapeSystem": "restrained radius: sm=4px, md=8px, lg=12px, xl=16px, full=9999px",
+      "typographySystem": "sans-serif stack with mono for code/technical elements; weight range 400-900",
+      "spacingSystem": "4px base unit, 8-point grid",
+      "componentLanguage": "glass-morphism cards with subtle borders, glow effects on hover",
+      "surfaceAndDepth": "dark layered surfaces with border-first depth; glow shadows for floating elements",
+      "imageryAndIconography": "line icons with brand color; warm-toned hero imagery",
+      "interactionTone": "playful spring animations, magnetic hover, 3D tilt, particle effects"
+    },
+    "specsConstraints": null,
+    "sharedProjectShellContract": {
+      "navigationShell": "fixed top nav with glassmorphism blur, logo + links + CTA, mobile hamburger",
+      "primaryColorSystem": "single brand hue amber #FF8906; coral #F25F4C for accent energy",
+      "typographySystem": "sans-serif body, mono for technical elements, weight 400-900",
+      "radiusScale": "sm=4px md=8px lg=12px xl=16px full=9999px",
+      "surfaceDepthModel": "dark bg #0F0E17, elevated #1A1926, surface #232136; border-first with glow on hover",
+      "ctaStyle": "pill-shaped filled buttons with brand gradient, spring hover animation",
+      "alignmentRules": "max-width 1280px centered, responsive grid layouts"
+    },
+    "generationTree": {
+      "root": {
+        "nodeId": "gen-project-shell",
+        "kind": "project-shell",
+        "pageIds": ["page-index"],
+        "output": "partials/project-shell.html",
+        "sharedRegions": ["nav", "footer"],
+        "privateRegions": [],
+        "mutableSlots": ["activeNavItem", "pageTitle"],
+        "status": "planned",
+        "children": [
+          {
+            "nodeId": "gen-page-index",
+            "kind": "page-leaf",
+            "pageIds": ["page-index"],
+            "output": "pages/index.html",
+            "sharedRegions": [],
+            "privateRegions": ["hero section", "marquee", "research tiles", "projects showcase", "atomcode promo", "stats", "CTA band"],
+            "mutableSlots": ["activeNavItem"],
+            "status": "planned",
+            "children": []
+          }
+        ]
+      }
+    }
+  },
+  "designSource": {
+    "operatingMode": "free-explore",
+    "libraryIdentity": null,
+    "libraryPath": null,
+    "cssFilePath": "d:\\lhw\\PythonProject\\gewislab-blog\\gewis-lab-homepage\\colors_and_type.css",
+    "brandPrefix": "gewis",
+    "themeMode": "dark",
+    "designDecisionSummary": "Warm amber/coral tech palette on deep dark background with rich interactive animations",
+    "componentContractKind": "undefined",
+    "forbiddenInventedComponents": [],
+    "allowedComponents": [],
+    "styleConstraints": {
+      "radiusMax": 16,
+      "spacingBase": 4,
+      "fontSizeBody": 16,
+      "fontSizeMin": 12,
+      "controlHeightDefault": 40,
+      "controlHeightLarge": 48
+    },
+    "productContext": {
+      "kitType": null,
+      "productType": "AI research lab homepage"
+    },
+    "actualTokenNameReference": [
+      { "semanticPurpose": "Background", "tokenName": "--color-bg" },
+      { "semanticPurpose": "Brand primary", "tokenName": "--color-brand" },
+      { "semanticPurpose": "Accent", "tokenName": "--color-accent" },
+      { "semanticPurpose": "Text primary", "tokenName": "--color-text-primary" },
+      { "semanticPurpose": "Text secondary", "tokenName": "--color-text-secondary" },
+      { "semanticPurpose": "Border", "tokenName": "--color-border" }
+    ]
+  },
+  "pages": [
+    {
+      "nodeId": "page-index",
+      "slug": "index",
+      "title": "首页",
+      "htmlSrc": "pages/index.html",
+      "pageIndex": 1,
+      "stateGroupId": null,
+      "stateRole": null,
+      "baseStatePageId": null,
+      "sharedShellContract": [],
+      "mutableRegions": [],
+      "derivedFromHtmlSrc": null,
+      "derivationType": "original",
+      "sourcePageId": null,
+      "sourceHtmlSrc": null,
+      "pageType": "showcase",
+      "businessScenario": "AI research lab homepage showcasing research directions, open source projects, and team achievements",
+      "visualNorthStar": "Warm particle network hero with floating orbs, 3D tilt research cards, animated code terminal, and spring-animated CTAs",
+      "compositionPattern": "full-bleed hero → marquee ticker → 2x2 research grid → project showcase cards → dark promo section → stats counter → CTA band → footer",
+      "continuityAnchors": ["dark glassmorphism nav", "brand amber CTA style", "mono eyebrow labels", "gradient text headings"],
+      "libraryRestraintMode": false,
+      "uiKitPath": null,
+      "chartsRequired": false,
+      "miniProgramStyle": false,
+      "componentPlan": [],
+      "imagePlan": [
+        { "role": "critical-hero", "filename": "hero-robot.jpg", "section": "project showcase" },
+        { "role": "supporting-content", "filename": "newton-rings.jpg", "section": "project showcase" }
+      ],
+      "visualNorthStarApplied": null,
+      "compositionPatternUsed": null,
+      "continuityAnchorsApplied": null
+    }
+  ],
+  "assets": [],
+  "wiringPlan": [],
+  "hiddenInteractionPlan": []
+}
